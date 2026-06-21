@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Englisch-Quiz: this / that / these / those</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', Verdana, sans-serif;
+    background: linear-gradient(135deg, #fef9e7, #e8f6ff);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    color: #2b6cb0;
+    font-size: 1.8em;
+  }
+  h2 {
+    color: #2b6cb0;
+  }
+  .rules-box {
+    background: #f0f9ff;
+    border: 2px solid #90cdf4;
+    border-radius: 14px;
+    padding: 18px;
+    margin: 20px 0;
+  }
+  .rules-box table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  .rules-box td, .rules-box th {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #cbd5e0;
+  }
+  .big-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin: 10px 0;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 14px;
+    background: #4299e1;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .big-btn:hover {
+    background: #3182ce;
+    transform: scale(1.02);
+  }
+  .big-btn:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .option-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    font-size: 1.05em;
+    border: 2px solid #90cdf4;
+    border-radius: 12px;
+    background: #fff;
+    color: #2b6cb0;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+  .option-btn:hover {
+    background: #ebf8ff;
+  }
+  .option-btn.selected {
+    background: #bee3f8;
+    border-color: #4299e1;
+  }
+  .option-btn.correct {
+    background: #c6f6d5;
+    border-color: #38a169;
+    color: #22543d;
+  }
+  .option-btn.incorrect {
+    background: #fed7d7;
+    border-color: #e53e3e;
+    color: #742a2a;
+  }
+  .option-btn:disabled {
+    cursor: default;
+  }
+  #progress {
+    font-weight: bold;
+    color: #2b6cb0;
+    margin-bottom: 10px;
+  }
+  .question-box {
+    background: #fffaf0;
+    border-radius: 14px;
+    padding: 20px;
+    margin: 15px 0;
+    font-size: 1.2em;
+    border: 2px solid #fbd38d;
+  }
+  .feedback {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb {
+    background: #c6f6d5;
+    color: #22543d;
+  }
+  .feedback.incorrect-fb {
+    background: #fed7d7;
+    color: #742a2a;
+  }
+  .hidden { display: none; }
+  .result-summary {
+    text-align: center;
+    font-size: 1.3em;
+    margin: 20px 0;
+  }
+  .wrong-list {
+    background: #fff5f5;
+    border: 2px solid #feb2b2;
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 20px;
+  }
+  .wrong-item {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #feb2b2;
+  }
+  .wrong-item:last-child {
+    border-bottom: none;
+  }
+  .progress-bar-outer {
+    width: 100%;
+    background: #e2e8f0;
+    border-radius: 10px;
+    height: 14px;
+    margin-bottom: 15px;
+    overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: #4299e1;
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .emoji {
+    font-size: 1.4em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="errorBox" style="display:none; background:#fed7d7; border:2px solid #e53e3e; border-radius:10px; padding:14px; margin-bottom:15px; color:#742a2a; font-size:0.9em;"></div>
+  <h1>🦊 Quiz: this / that / these / those 🦊</h1>
+
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <div class="rules-box">
+      <h2>📚 Die Regeln</h2>
+      <p>Mit <strong>this, that, these</strong> und <strong>those</strong> zeigen wir auf Dinge. Es kommt darauf an, ob die Sache <strong>nah</strong> oder <strong>weit weg</strong> ist und ob es <strong>eine</strong> Sache (Einzahl) oder <strong>mehrere</strong> Sachen (Mehrzahl) sind.</p>
+      <table>
+        <tr><th>Wort</th><th>Anzahl</th><th>Entfernung</th><th>Beispiel</th></tr>
+        <tr><td><strong>this</strong></td><td>Einzahl</td><td>nah</td><td>this book</td></tr>
+        <tr><td><strong>that</strong></td><td>Einzahl</td><td>weit weg</td><td>that house</td></tr>
+        <tr><td><strong>these</strong></td><td>Mehrzahl</td><td>nah</td><td>these pens</td></tr>
+        <tr><td><strong>those</strong></td><td>Mehrzahl</td><td>weit weg</td><td>those cars</td></tr>
+      </table>
+      <p>Bei manchen Aufgaben musst du einen <strong>Fehler finden</strong>. Manchmal ist der Satz aber schon richtig – dann wählst du <strong>„kein Fehler“</strong>.</p>
+    </div>
+    <button class="big-btn" id="startBtn" onclick="startQuiz()">🚀 Quiz starten</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" class="hidden">
+    <div id="progress"></div>
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
+    <div class="question-box" id="questionText"></div>
+    <div id="optionsContainer"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="big-btn hidden" id="nextBtn" onclick="goToNextQuestion()">Weiter ➡️</button>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="resultScreen" class="hidden">
+    <h2>🎉 Auswertung</h2>
+    <div class="result-summary" id="resultSummary"></div>
+    <div id="wrongAnswers"></div>
+    <button class="big-btn" id="restartBtn" onclick="restartQuiz()">🔄 Quiz neu starten</button>
+  </div>
+</div>
+
+<script>
+window.onerror = function(msg, url, line, col, error) {
+  const box = document.getElementById('errorBox');
+  if (box) {
+    box.style.display = 'block';
+    box.textContent = 'JavaScript-Fehler: ' + msg + ' (Zeile ' + line + ')';
+  }
+  return false;
+};
+
+// ===================== AUFGABENPOOL (60 Aufgaben) =====================
+const questionPool = [
+  // ---- Typ 1: Lückensätze (this) ----
+  { question: "_____ book here is mine.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "Ein Buch (Einzahl) direkt hier (nah) → this." },
+  { question: "_____ pen in my hand is blue.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "Ein Stift (Einzahl), den ich in der Hand halte (nah) → this." },
+  { question: "_____ apple on my desk looks yummy.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "Ein Apfel (Einzahl) auf meinem Tisch (nah) → this." },
+  { question: "_____ chair next to me is broken.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "Ein Stuhl (Einzahl) direkt neben mir (nah) → this." },
+  { question: "_____ dog here is very friendly.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "Ein Hund (Einzahl) hier (nah) → this." },
+  { question: "_____ bag on the table belongs to Lisa.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "Eine Tasche (Einzahl) hier auf dem Tisch (nah) → this." },
+  { question: "_____ phone in my pocket is new.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "Ein Handy (Einzahl), das ich in der Tasche habe (nah) → this." },
+  { question: "_____ shirt I am wearing is red.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "Ein Hemd (Einzahl), das ich gerade trage (nah) → this." },
+
+  // ---- Typ 1: Lückensätze (that) ----
+  { question: "_____ car over there is very fast.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "Ein Auto (Einzahl) weit weg (over there) → that." },
+  { question: "_____ house on the other street is huge.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "Ein Haus (Einzahl) weit entfernt → that." },
+  { question: "_____ man standing far away is my teacher.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "Ein Mann (Einzahl) weit weg → that." },
+  { question: "_____ tree on the hill is very old.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "Ein Baum (Einzahl) auf dem Hügel (weit weg) → that." },
+  { question: "_____ building across the street is a school.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "Ein Gebäude (Einzahl) auf der anderen Straßenseite (weit weg) → that." },
+  { question: "_____ cat sitting on the wall is sleeping.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "Eine Katze (Einzahl) entfernt auf der Mauer → that." },
+  { question: "_____ mountain in the distance looks amazing.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "Ein Berg (Einzahl) in der Ferne → that." },
+  { question: "_____ shop on the corner sells ice cream.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "Ein Geschäft (Einzahl) etwas weiter weg → that." },
+
+  // ---- Typ 1: Lückensätze (these) ----
+  { question: "_____ pencils here are red.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "Mehrere Stifte (Mehrzahl) hier (nah) → these." },
+  { question: "_____ shoes on the floor are mine.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "Mehrere Schuhe (Mehrzahl) hier (nah) → these." },
+  { question: "_____ cookies on the plate taste great.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "Mehrere Kekse (Mehrzahl) hier (nah) → these." },
+  { question: "_____ flowers in my hand smell nice.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "Mehrere Blumen (Mehrzahl), die ich halte (nah) → these." },
+  { question: "_____ students in our class are very smart.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "Mehrere Schüler (Mehrzahl) hier in unserer Klasse (nah) → these." },
+  { question: "_____ books on my desk are heavy.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "Mehrere Bücher (Mehrzahl) hier auf meinem Tisch (nah) → these." },
+  { question: "_____ toys here belong to my little brother.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "Mehrere Spielsachen (Mehrzahl) hier (nah) → these." },
+  { question: "_____ socks in my drawer are clean.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "Mehrere Socken (Mehrzahl) hier in der Schublade (nah) → these." },
+
+  // ---- Typ 1: Lückensätze (those) ----
+  { question: "_____ birds in the sky are flying south.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "Mehrere Vögel (Mehrzahl) weit oben/weg → those." },
+  { question: "_____ children playing over there are loud.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "Mehrere Kinder (Mehrzahl) weit weg (over there) → those." },
+  { question: "_____ mountains far away look beautiful.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "Mehrere Berge (Mehrzahl) in der Ferne → those." },
+  { question: "_____ clouds above the hill are dark.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "Mehrere Wolken (Mehrzahl) weit weg über dem Hügel → those." },
+  { question: "_____ cars parked across the street are new.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "Mehrere Autos (Mehrzahl) auf der anderen Straßenseite (weit weg) → those." },
+  { question: "_____ horses in the field are running fast.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "Mehrere Pferde (Mehrzahl) weit weg auf dem Feld → those." },
+  { question: "_____ stars in the sky are shining brightly.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "Mehrere Sterne (Mehrzahl) weit weg am Himmel → those." },
+  { question: "_____ people standing far away are waving.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "Mehrere Personen (Mehrzahl) weit weg → those." },
+
+  // ---- Typ 2: "over there" Sätze ----
+  { question: "Look at _____ birds over there.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "„over there“ bedeutet weit weg, und „birds“ ist Mehrzahl → those." },
+  { question: "Can you see _____ boat over there?", options: ["this","that","these","those"], correctAnswer: "that", explanation: "„over there“ bedeutet weit weg, und „boat“ ist Einzahl → that." },
+  { question: "_____ kites over there are red and yellow.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "„over there“ und Mehrzahl „kites“ → those." },
+  { question: "I like _____ jacket over there in the window.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "„over there“ und Einzahl „jacket“ → that." },
+  { question: "_____ flags over there belong to the school.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "„over there“ und Mehrzahl „flags“ → those." },
+  { question: "Who is _____ boy over there with the red cap?", options: ["this","that","these","those"], correctAnswer: "that", explanation: "„over there“ und Einzahl „boy“ → that." },
+  { question: "_____ apples over there are not ripe yet.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "„over there“ und Mehrzahl „apples“ → those." },
+  { question: "_____ castle over there is more than 500 years old.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "„over there“ und Einzahl „castle“ → that." },
+  { question: "_____ sheep over there in the field are sleeping.", options: ["this","that","these","those"], correctAnswer: "those", explanation: "„sheep“ ist hier Mehrzahl und „over there“ → those." },
+  { question: "_____ bicycle over there near the tree is mine.", options: ["this","that","these","those"], correctAnswer: "that", explanation: "„over there“ und Einzahl „bicycle“ → that." },
+
+  // ---- Typ 3: Singular/Plural erkennen ----
+  { question: "_____ pencils here are red.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "„pencils“ ist Mehrzahl und „here“ bedeutet nah → these." },
+  { question: "_____ apple here is very sweet.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "„apple“ ist Einzahl und „here“ bedeutet nah → this." },
+  { question: "_____ window here needs to be cleaned.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "„window“ ist Einzahl und „here“ bedeutet nah → this." },
+  { question: "_____ glasses on the table are mine.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "„glasses“ ist hier Mehrzahl und nah (on the table) → these." },
+  { question: "_____ notebook in my bag is full.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "„notebook“ ist Einzahl und nah (in my bag) → this." },
+  { question: "_____ keys on my desk are not mine.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "„keys“ ist Mehrzahl und nah (on my desk) → these." },
+  { question: "_____ ball under the table is flat.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "„ball“ ist Einzahl und nah (under the table) → this." },
+  { question: "_____ rulers in the box are too short.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "„rulers“ ist Mehrzahl und nah (in the box) → these." },
+  { question: "_____ orange in my lunch box is for you.", options: ["this","that","these","those"], correctAnswer: "this", explanation: "„orange“ ist Einzahl und nah (in my lunch box) → this." },
+  { question: "_____ erasers on the shelf belong to the class.", options: ["this","that","these","those"], correctAnswer: "these", explanation: "„erasers“ ist Mehrzahl und nah (on the shelf) → these." },
+
+  // ---- Typ 4: Fehler finden ----
+  { question: "Finde den Fehler: \"These book is new.\"", options: ["This book is new.","That book is new.","These books are new.","kein Fehler"], correctAnswer: "These books are new.", explanation: "„these“ verlangt ein Nomen in der Mehrzahl, also muss es „books“ heißen." },
+  { question: "Finde den Fehler: \"This pens are blue.\"", options: ["That pens are blue.","These pens are blue.","This pen are blue.","kein Fehler"], correctAnswer: "These pens are blue.", explanation: "„pens“ ist Mehrzahl, deshalb passt „this“ nicht – richtig ist „these pens are blue.“" },
+  { question: "Finde den Fehler: \"Those car is fast.\"", options: ["That car is fast.","Those cars are fast.","These car is fast.","kein Fehler"], correctAnswer: "That car is fast.", explanation: "„car“ ist Einzahl, deshalb passt „those“ nicht – richtig ist „that car is fast.“" },
+  { question: "Finde den Fehler: \"That dogs are loud.\"", options: ["Those dogs are loud.","This dogs are loud.","That dog is loud.","kein Fehler"], correctAnswer: "Those dogs are loud.", explanation: "„dogs“ ist Mehrzahl und weit weg, deshalb passt „those“, nicht „that“." },
+  { question: "Finde den Fehler: \"These apple is red.\"", options: ["This apple is red.","These apples are red.","Those apple is red.","kein Fehler"], correctAnswer: "These apples are red.", explanation: "„these“ braucht ein Nomen in der Mehrzahl, also „apples“." },
+  { question: "Finde den Fehler: \"This is my favourite book.\"", options: ["These is my favourite book.","Those is my favourite book.","That is my favourite book.","kein Fehler"], correctAnswer: "kein Fehler", explanation: "„book“ ist Einzahl und der Satz ist bereits korrekt – kein Fehler." },
+  { question: "Finde den Fehler: \"Those are my new shoes.\"", options: ["That are my new shoes.","These are my new shoes.","This are my new shoes.","kein Fehler"], correctAnswer: "kein Fehler", explanation: "„shoes“ ist Mehrzahl und der Satz ist bereits korrekt – kein Fehler." },
+  { question: "Finde den Fehler: \"This shoes are too small.\"", options: ["These shoes are too small.","That shoes are too small.","This shoe are too small.","kein Fehler"], correctAnswer: "These shoes are too small.", explanation: "„shoes“ ist Mehrzahl, deshalb passt „this“ nicht – richtig ist „these shoes are too small.“" },
+  { question: "Finde den Fehler: \"Those bag is heavy.\"", options: ["That bag is heavy.","Those bags are heavy.","These bag is heavy.","kein Fehler"], correctAnswer: "That bag is heavy.", explanation: "„bag“ ist Einzahl, deshalb passt „those“ nicht – richtig ist „that bag is heavy.“" },
+  { question: "Finde den Fehler: \"These is a nice picture.\"", options: ["This is a nice picture.","Those is a nice picture.","These are a nice picture.","kein Fehler"], correctAnswer: "This is a nice picture.", explanation: "„picture“ ist Einzahl, deshalb passt „these“ nicht – richtig ist „this is a nice picture.“" },
+  { question: "Finde den Fehler: \"That are my friends over there.\"", options: ["Those are my friends over there.","This are my friends over there.","These are my friends over there.","kein Fehler"], correctAnswer: "Those are my friends over there.", explanation: "„friends“ ist Mehrzahl und weit weg, deshalb passt „those“, nicht „that“." },
+  { question: "Finde den Fehler: \"This birds are singing.\"", options: ["These birds are singing.","That birds are singing.","This bird are singing.","kein Fehler"], correctAnswer: "These birds are singing.", explanation: "„birds“ ist Mehrzahl, deshalb passt „this“ nicht – richtig ist „these birds are singing.“" },
+  { question: "Finde den Fehler: \"Those is a big mountain.\"", options: ["That is a big mountain.","These is a big mountain.","Those are a big mountain.","kein Fehler"], correctAnswer: "That is a big mountain.", explanation: "„mountain“ ist Einzahl, deshalb passt „those“ nicht – richtig ist „that is a big mountain.“" },
+  { question: "Finde den Fehler: \"These pencil is sharp.\"", options: ["This pencil is sharp.","These pencils are sharp.","Those pencil is sharp.","kein Fehler"], correctAnswer: "This pencil is sharp.", explanation: "„pencil“ ist Einzahl, deshalb passt „these“ nicht – richtig ist „this pencil is sharp.“" },
+  { question: "Finde den Fehler: \"That are nice flowers.\"", options: ["Those are nice flowers.","This are nice flowers.","That is nice flowers.","kein Fehler"], correctAnswer: "Those are nice flowers.", explanation: "„flowers“ ist Mehrzahl, deshalb passt „that“ nicht – richtig ist „those are nice flowers.“" },
+  { question: "Finde den Fehler: \"This is my new bike.\"", options: ["These is my new bike.","Those is my new bike.","That is my new bike.","kein Fehler"], correctAnswer: "kein Fehler", explanation: "„bike“ ist Einzahl und der Satz ist bereits korrekt – kein Fehler." },
+  { question: "Finde den Fehler: \"These are my classmates.\"", options: ["This are my classmates.","Those is my classmates.","That are my classmates.","kein Fehler"], correctAnswer: "kein Fehler", explanation: "„classmates“ ist Mehrzahl und der Satz ist bereits korrekt – kein Fehler." },
+  { question: "Finde den Fehler: \"Those tree is very tall.\"", options: ["That tree is very tall.","Those trees are very tall.","These tree is very tall.","kein Fehler"], correctAnswer: "That tree is very tall.", explanation: "„tree“ ist Einzahl, deshalb passt „those“ nicht – richtig ist „that tree is very tall.“" },
+  { question: "Finde den Fehler: \"This cookies taste good.\"", options: ["These cookies taste good.","That cookies taste good.","This cookie taste good.","kein Fehler"], correctAnswer: "These cookies taste good.", explanation: "„cookies“ ist Mehrzahl, deshalb passt „this“ nicht – richtig ist „these cookies taste good.“" },
+  { question: "Finde den Fehler: \"That is my teacher over there.\"", options: ["Those is my teacher over there.","These is my teacher over there.","That are my teacher over there.","kein Fehler"], correctAnswer: "kein Fehler", explanation: "„teacher“ ist Einzahl, weit weg, der Satz ist bereits korrekt – kein Fehler." }
+];
+
+// ===================== STATE =====================
+let selectedQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let wrongAnswers = [];
+let answered = false;
+
+let startScreen, quizScreen, resultScreen, startBtn, nextBtn, restartBtn,
+    progressEl, progressBar, questionTextEl, optionsContainer, feedbackEl;
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  const numQuestions = Math.floor(Math.random() * 6) + 15; // 15 bis 20
+  selectedQuestions = shuffleArray(questionPool).slice(0, numQuestions);
+  currentIndex = 0;
+  score = 0;
+  wrongAnswers = [];
+  startScreen.classList.add('hidden');
+  resultScreen.classList.add('hidden');
+  quizScreen.classList.remove('hidden');
+  showQuestion();
+}
+
+function showQuestion() {
+  answered = false;
+  feedbackEl.className = 'feedback';
+  feedbackEl.textContent = '';
+  nextBtn.classList.add('hidden');
+
+  const q = selectedQuestions[currentIndex];
+  progressEl.textContent = `Frage ${currentIndex + 1} von ${selectedQuestions.length}`;
+  progressBar.style.width = ((currentIndex) / selectedQuestions.length * 100) + '%';
+  questionTextEl.textContent = q.question;
+
+  optionsContainer.innerHTML = '';
+  const shuffledOptions = shuffleArray(q.options);
+  shuffledOptions.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => selectAnswer(opt, btn));
+    optionsContainer.appendChild(btn);
+  });
+}
+
+function selectAnswer(selected, btnEl) {
+  if (answered) return;
+  answered = true;
+
+  const q = selectedQuestions[currentIndex];
+  const allButtons = optionsContainer.querySelectorAll('.option-btn');
+  allButtons.forEach(b => b.disabled = true);
+
+  btnEl.classList.add('selected');
+
+  const isCorrect = selected === q.correctAnswer;
+
+  if (isCorrect) {
+    score++;
+    btnEl.classList.add('correct');
+    feedbackEl.textContent = '✅ Richtig!';
+    feedbackEl.className = 'feedback show correct-fb';
+  } else {
+    btnEl.classList.add('incorrect');
+    allButtons.forEach(b => {
+      if (b.textContent === q.correctAnswer) {
+        b.classList.add('correct');
+      }
+    });
+    feedbackEl.textContent = '❌ Leider falsch.';
+    feedbackEl.className = 'feedback show incorrect-fb';
+    wrongAnswers.push({
+      question: q.question,
+      yourAnswer: selected,
+      correctAnswer: q.correctAnswer,
+      explanation: q.explanation
+    });
+  }
+
+  nextBtn.classList.remove('hidden');
+}
+
+function goToNextQuestion() {
+  currentIndex++;
+  if (currentIndex < selectedQuestions.length) {
+    showQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  quizScreen.classList.add('hidden');
+  resultScreen.classList.remove('hidden');
+
+  const total = selectedQuestions.length;
+  const correctCount = score;
+  const wrongCount = total - score;
+  const percent = Math.round((score / total) * 100);
+
+  let emoji = '🙂';
+  if (percent >= 90) emoji = '🏆';
+  else if (percent >= 70) emoji = '🎉';
+  else if (percent < 50) emoji = '💪';
+
+  document.getElementById('resultSummary').innerHTML = `
+    <span class="emoji">${emoji}</span><br>
+    Du hast <strong>${correctCount}</strong> von <strong>${total}</strong> Fragen richtig beantwortet.<br>
+    Richtige Antworten: <strong>${correctCount}</strong><br>
+    Falsche Antworten: <strong>${wrongCount}</strong><br>
+    Ergebnis: <strong>${percent}%</strong>
+  `;
+
+  const wrongDiv = document.getElementById('wrongAnswers');
+  wrongDiv.innerHTML = '';
+  if (wrongAnswers.length > 0) {
+    const box = document.createElement('div');
+    box.className = 'wrong-list';
+    box.innerHTML = '<h3>📋 Deine falsch beantworteten Aufgaben:</h3>';
+    wrongAnswers.forEach(w => {
+      const item = document.createElement('div');
+      item.className = 'wrong-item';
+      item.innerHTML = `
+        <p><strong>Aufgabe:</strong> ${w.question}</p>
+        <p><strong>Deine Antwort:</strong> ${w.yourAnswer}</p>
+        <p><strong>Richtige Lösung:</strong> ${w.correctAnswer}</p>
+        <p><strong>Erklärung:</strong> ${w.explanation}</p>
+      `;
+      box.appendChild(item);
+    });
+    wrongDiv.appendChild(box);
+  } else {
+    wrongDiv.innerHTML = '<p style="text-align:center;">🌟 Super! Du hattest keine falschen Antworten!</p>';
+  }
+}
+
+function restartQuiz() {
+  resultScreen.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+}
+
+// Funktionen explizit global verfügbar machen (wichtig für onclick-Attribute)
+window.startQuiz = startQuiz;
+window.goToNextQuestion = goToNextQuestion;
+window.restartQuiz = restartQuiz;
+
+function initApp() {
+  startScreen = document.getElementById('startScreen');
+  quizScreen = document.getElementById('quizScreen');
+  resultScreen = document.getElementById('resultScreen');
+  startBtn = document.getElementById('startBtn');
+  nextBtn = document.getElementById('nextBtn');
+  restartBtn = document.getElementById('restartBtn');
+  progressEl = document.getElementById('progress');
+  progressBar = document.getElementById('progressBar');
+  questionTextEl = document.getElementById('questionText');
+  optionsContainer = document.getElementById('optionsContainer');
+  feedbackEl = document.getElementById('feedback');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
+</script>
+</body>
+</html>
